@@ -83,3 +83,4 @@ pre-commit install
 * (uv run) make lint --- линтинг исходных файлов
 * (uv run) make format --- автоформатирование исходных файлов
 * (uv run) make update_req --- обновление файла requirements.txt
+* make server --- компиляция сервера
