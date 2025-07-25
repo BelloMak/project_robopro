@@ -1,0 +1,10 @@
+[run]
+omit = 
+    test_*.py
+    __init__.py
+    start_*.py
+    i_*.py
+
+[report]
+exclude_also =
+    pass
