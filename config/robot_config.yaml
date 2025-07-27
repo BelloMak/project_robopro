@@ -1,0 +1,45 @@
+base_pos:
+  x: 0
+  y: 0
+  z: 0
+  alpha: 0
+  beta: 0
+  gamma: 0
+
+joint_1:
+  a: 0
+  d: 0.21
+  alpha: 90
+
+joint_2:
+  a: -0.8
+  d: 0.193
+  alpha: 0
+
+joint_3:
+  a: -0.598
+  d: -0.16
+  alpha: 0
+
+joint_4:
+  a: 0
+  d: 0.25
+  alpha: 90
+
+joint_5:
+  a: 0
+  d: 0.25
+  alpha: -90
+
+joint_6:
+  a: 0
+  d: 0.25
+  alpha: 0
+
+end_effector_pos:
+  x: 0
+  y: 0
+  z: 0
+  alpha: 0
+  beta: 0
+  gamma: 0
