@@ -1,12 +1,12 @@
 from abc import ABCMeta, abstractmethod
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 from roboter.common.error.custom_error import Error
 
 
 class IAnglesData(object, metaclass=ABCMeta):
     identifier: int
-    angles: List[float]
+    angles: Tuple
 
     @classmethod
     @abstractmethod
