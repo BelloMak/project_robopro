@@ -46,7 +46,7 @@ def handle_connection(function):
     return wrapper
 
 
-class RobotController:
+class RobotController(object):
     __CMD_GET_POSITION = "get"
     __RECEIVE_MSG_TIMEOUT = 1  # s
 

@@ -1,4 +1,4 @@
-class Error:
+class Error(object):
     """
     Custom error class for module
     """
