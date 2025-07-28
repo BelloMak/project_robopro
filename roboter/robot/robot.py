@@ -22,6 +22,9 @@ class Robot(IRobot):
         )
         self._joints: List[IJoint] = []
 
+        self.__base_translation_matrix = None
+        self.__ee_translation_matrix = None
+
     def set_base_position(
         self, base_pos: CoordinateSystemPosition
     ) -> Optional[Error]:
@@ -30,6 +33,7 @@ class Robot(IRobot):
         """
 
         self._base_position = base_pos
+        self.__base_translation_matrix = None
         debug(f"Setted robot base position: {base_pos}")
         return None
 
@@ -41,6 +45,7 @@ class Robot(IRobot):
         """
 
         self._ee_position = ee_pos
+        self.__ee_translation_matrix = None
         debug(f"Setted robot end effector position: {ee_pos}")
         return None
 
@@ -56,7 +61,7 @@ class Robot(IRobot):
         return None
 
     def get_ee_position(
-        self, joints_pos: Tuple
+        self, joints_pos: Tuple[float, ...]
     ) -> Tuple[Optional[Matrix], Optional[Error]]:
         """
         Calculate end effector position using joints positions.
@@ -68,7 +73,7 @@ class Robot(IRobot):
         return matrix, None
 
     def _get_transform_matrix(
-        self, joints_pos: Tuple
+        self, joints_pos: Tuple[float, ...]
     ) -> Tuple[Optional[Matrix], Optional[Error]]:
         """
         Get transformation matrix for all joints
@@ -77,30 +82,33 @@ class Robot(IRobot):
         if len(joints_pos) != len(self._joints):
             return None, DataTypeError("invalid input data length")
         # base pos matrix
-        matrix = get_coordinates_transform_matrix(
-            self._base_position.x,
-            self._base_position.y,
-            self._base_position.z,
-            self._base_position.alpha,
-            self._base_position.beta,
-            self._base_position.gamma,
-        )
+        if self.__base_translation_matrix is None:
+            self.__base_translation_matrix = get_coordinates_transform_matrix(
+                self._base_position.x,
+                self._base_position.y,
+                self._base_position.z,
+                self._base_position.alpha,
+                self._base_position.beta,
+                self._base_position.gamma,
+            )
         # robot joints translation matrix
+        matrix = self.__base_translation_matrix
         for joint, joint_pos in zip(self._joints, joints_pos):
             matrix_i, err = joint.get_matrix(joint_pos)
             if err is not None or matrix_i is None:
                 return None, err
             matrix = np.dot(matrix, matrix_i)
         # end effector translation matrix
-        ee_translation_matrix = get_coordinates_transform_matrix(
-            self._ee_position.x,
-            self._ee_position.y,
-            self._ee_position.z,
-            self._ee_position.alpha,
-            self._ee_position.beta,
-            self._ee_position.gamma,
-        )
+        if self.__ee_translation_matrix is None:
+            self.__ee_translation_matrix = get_coordinates_transform_matrix(
+                self._ee_position.x,
+                self._ee_position.y,
+                self._ee_position.z,
+                self._ee_position.alpha,
+                self._ee_position.beta,
+                self._ee_position.gamma,
+            )
 
-        matrix = np.dot(matrix, ee_translation_matrix)
+        matrix = np.dot(matrix, self.__ee_translation_matrix)
 
         return matrix, None
