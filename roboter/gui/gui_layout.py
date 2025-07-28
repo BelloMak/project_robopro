@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file './roboter/gui/terminal_gui.ui'
+# Form implementation generated from reading ui file './roboter/gui/gui_layout.ui'
 #
 # Created by: PyQt6 UI code generator 6.4.2
 #
@@ -12,39 +12,26 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1277, 720)
+        MainWindow.resize(1280, 720)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        MainWindow.setFont(font)
         MainWindow.setAcceptDrops(False)
         MainWindow.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.horizontalLayoutWidget = QtWidgets.QWidget(
+        self.getRobotPositionButton = QtWidgets.QPushButton(
             parent=self.centralwidget
         )
-        self.horizontalLayoutWidget.setGeometry(
-            QtCore.QRect(0, 100, 1271, 591)
-        )
-        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(
-            self.horizontalLayoutWidget
-        )
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.horizontalLayout.addLayout(self.verticalLayout)
-        self.pushButton = QtWidgets.QPushButton(
-            parent=self.horizontalLayoutWidget
-        )
+        self.getRobotPositionButton.setGeometry(QtCore.QRect(20, 90, 151, 30))
         font = QtGui.QFont()
         font.setPointSize(12)
-        self.pushButton.setFont(font)
-        self.pushButton.setAcceptDrops(True)
-        self.pushButton.setAutoFillBackground(False)
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.tableWidget = QtWidgets.QTableWidget(
-            parent=self.horizontalLayoutWidget
-        )
+        self.getRobotPositionButton.setFont(font)
+        self.getRobotPositionButton.setAcceptDrops(True)
+        self.getRobotPositionButton.setAutoFillBackground(False)
+        self.getRobotPositionButton.setObjectName("getRobotPositionButton")
+        self.tableWidget = QtWidgets.QTableWidget(parent=self.centralwidget)
+        self.tableWidget.setGeometry(QtCore.QRect(20, 140, 1240, 560))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.tableWidget.setFont(font)
@@ -53,6 +40,9 @@ class Ui_MainWindow(object):
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(7)
         item = QtWidgets.QTableWidgetItem()
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        item.setFont(font)
         self.tableWidget.setHorizontalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(1, item)
@@ -67,32 +57,30 @@ class Ui_MainWindow(object):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(6, item)
         self.tableWidget.horizontalHeader().setCascadingSectionResizes(False)
-        self.tableWidget.horizontalHeader().setStretchLastSection(False)
-        self.horizontalLayout.addWidget(self.tableWidget)
-        self.verticalLayoutWidget = QtWidgets.QWidget(
-            parent=self.centralwidget
-        )
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 721, 91))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(
-            self.verticalLayoutWidget
-        )
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.helpLabel = QtWidgets.QLabel(parent=self.verticalLayoutWidget)
+        self.tableWidget.horizontalHeader().setDefaultSectionSize(176)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.verticalHeader().setVisible(False)
+        self.helpLabel = QtWidgets.QLabel(parent=self.centralwidget)
+        self.helpLabel.setGeometry(QtCore.QRect(20, 10, 771, 60))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.helpLabel.setFont(font)
+        self.helpLabel.setWordWrap(True)
         self.helpLabel.setObjectName("helpLabel")
-        self.verticalLayout_2.addWidget(self.helpLabel)
-        self.errorLabel = QtWidgets.QLabel(parent=self.verticalLayoutWidget)
+        self.errorLabel = QtWidgets.QLabel(parent=self.centralwidget)
+        self.errorLabel.setGeometry(QtCore.QRect(350, 84, 901, 41))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(False)
         self.errorLabel.setFont(font)
         self.errorLabel.setStyleSheet("color: rgb(192, 28, 40);")
         self.errorLabel.setObjectName("errorLabel")
-        self.verticalLayout_2.addWidget(self.errorLabel)
+        self.clearButton = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.clearButton.setGeometry(QtCore.QRect(180, 90, 151, 30))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.clearButton.setFont(font)
+        self.clearButton.setObjectName("clearButton")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -103,8 +91,10 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton.setText(_translate("MainWindow", "Get robot position"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Robopro Terminal"))
+        self.getRobotPositionButton.setText(
+            _translate("MainWindow", "Get robot position")
+        )
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "Timestamp"))
         item = self.tableWidget.horizontalHeaderItem(1)
@@ -122,7 +112,8 @@ class Ui_MainWindow(object):
         self.helpLabel.setText(
             _translate(
                 "MainWindow",
-                'To get robot end effector position press button "Get robot position"',
+                'To get robot end effector position press button "Get robot position". To clear table press "Clear table". Note that the angle values are given for the Euler angles with the ZYX transformation.',
             )
         )
         self.errorLabel.setText(_translate("MainWindow", "Error"))
+        self.clearButton.setText(_translate("MainWindow", "Clear table"))
