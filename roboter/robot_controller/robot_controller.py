@@ -34,11 +34,11 @@ def handle_connection(function):
             return None, err
 
         data, err = function(self, *args, **kwargs)
+        _ = self._stream.close()
 
         if err is not None:
             return None, err
 
-        _ = self._stream.close()
         return data, None
 
     return wrapper

@@ -2,8 +2,15 @@
 #    uv export --no-hashes --format requirements-txt
 cfgv==3.4.0
     # via pre-commit
+click==8.2.1
+    # via
+    #   pyqt6-plugins
+    #   pyqt6-tools
+    #   qt6-tools
 colorama==0.4.6 ; sys_platform == 'win32'
-    # via pytest
+    # via
+    #   click
+    #   pytest
 coverage==7.10.0
     # via pytest-cov
 debugpy==1.8.15
@@ -32,13 +39,34 @@ pluggy==1.6.0
 pre-commit==4.2.0
 pygments==2.19.2
     # via pytest
+pyqt6==6.4.2
+    # via
+    #   pyqt6-plugins
+    #   pyqt6-tools
+    #   robot-terminal
+pyqt6-plugins==6.4.2.2.3
+    # via pyqt6-tools
+pyqt6-qt6==6.4.3
+    # via
+    #   pyqt6
+    #   pyqt6-plugins
+pyqt6-sip==13.10.2
+    # via pyqt6
+pyqt6-tools==6.4.2.3.3
 pyright==1.1.403
 pytest==8.4.1
     # via pytest-cov
 pytest-cov==6.2.1
+python-dotenv==1.1.1
+    # via pyqt6-tools
 pyyaml==6.0.2
     # via pre-commit
+qt6-applications==6.4.3.2.3
+    # via qt6-tools
+qt6-tools==6.4.3.1.3
+    # via pyqt6-plugins
 ruff==0.12.5
+setuptools==80.9.0
 tomli==2.2.1 ; python_full_version <= '3.11'
     # via coverage
 typing-extensions==4.14.1
