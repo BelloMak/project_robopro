@@ -60,7 +60,9 @@ pytest-cov==6.2.1
 python-dotenv==1.1.1
     # via pyqt6-tools
 pyyaml==6.0.2
-    # via pre-commit
+    # via
+    #   pre-commit
+    #   robot-terminal
 qt6-applications==6.4.3.2.3
     # via qt6-tools
 qt6-tools==6.4.3.1.3

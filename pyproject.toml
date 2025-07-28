@@ -10,6 +10,7 @@ readme = {file = "README.md", content-type = "text/markdown"}
 dependencies = [
     "numpy>=2.3.2",
     "pyqt6>=6.4.2",
+    "pyyaml>=6.0.2",
 ]
 
 [tool.ruff] 
