@@ -1,4 +1,5 @@
 import socket
+import time
 from typing import Optional, Tuple
 
 from roboter.common.error.connection_error import ConnectionError
@@ -6,13 +7,12 @@ from roboter.common.error.custom_error import Error
 from roboter.common.error.runtime_error import RunTimeError
 from roboter.common.logger.logger import debug
 from roboter.common.stream.interface.i_stream import (
-    IReadStream,
-    IWriteStream,
+    IStream,
     ReceiveResult,
 )
 
 
-class UdpClientStream(IWriteStream, IReadStream):
+class UdpClientStream(IStream):
     def __init__(
         self,
         hostname: str,
@@ -37,7 +37,6 @@ class UdpClientStream(IWriteStream, IReadStream):
 
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            # self._socket.bind((self._hostname, self._port))
             self._socket.setblocking(self._is_blocking)
             self._is_open = True
             debug(f"Opened UDP socket on {self._hostname}:{self._port}")
@@ -52,25 +51,26 @@ class UdpClientStream(IWriteStream, IReadStream):
         Close the UDP socket.
         """
 
-        if not self._is_open:
+        if not self._is_open or self._socket is None:
             return RunTimeError("udp socket already closed")
 
         try:
             self._socket.close()
             debug(f"Closed UDP socket on {self._hostname}:{self._port}")
+            self._is_open = False
             return None
         except socket.error as e:
+            self._is_open = False
             return ConnectionError(
                 f"error occurred when closing udp socket on {self._hostname}:{self._port}: {e}"
             )
-        self._is_open = False
 
     def send_data(self, data: bytes) -> Optional[Error]:
         """
         Send data to socket.
         """
 
-        if not self._is_open:
+        if not self._is_open or self._socket is None:
             return RunTimeError("failed to send data, udp socket closed")
 
         try:
@@ -81,32 +81,46 @@ class UdpClientStream(IWriteStream, IReadStream):
                 f"error occurred when sending data via udp on {self._hostname}:{self._port}: {e}"
             )
 
-    def receive_data(self) -> Tuple[ReceiveResult, Optional[Error]]:
+    def receive_data(
+        self, buffer_size: int = 0, timeout: int = 1
+    ) -> Tuple[ReceiveResult, Optional[Error]]:
         """
         Read data from socket.
         """
 
-        if not self._is_open:
+        if not self._is_open or self._socket is None:
             return (None, False), ConnectionError(
                 "connection is not established"
             )
-        try:
-            raw_data = self._socket.recv(self._buffer_size)
-            has_received = len(raw_data) > 0
-            error = None
-        except BlockingIOError:
-            raw_data = None
-            has_received = False
-            error = None
-        except socket.error as e:
-            raw_data = None
-            has_received = False
-            error = ConnectionError(
-                f"error occurred when receiving data via udp on {self._hostname}:{self._port}: {e}"
-            )
+        if buffer_size == 0:
+            buffer_size = self._buffer_size
+
+        start = time.time()
+        while True:
+            if time.time() - start > timeout:
+                return (None, False), ConnectionError(
+                    "timeout occurred when receiving data"
+                )
+            try:
+                raw_data = self._socket.recv(buffer_size)
+                has_received = len(raw_data) > 0
+                error = None
+                if has_received:
+                    break
+            except BlockingIOError:
+                raw_data = None
+                has_received = False
+                error = None
+            except socket.error as e:
+                raw_data = None
+                has_received = False
+                error = ConnectionError(
+                    f"error occurred when receiving data via udp on {self._hostname}:{self._port}: {e}"
+                )
+            time.sleep(0.01)
         return (raw_data, has_received), error
 
     def __del__(self):
-        if self._is_open:
+        if self._is_open and self._socket is not None:
             self._socket.close()
         self._socket = None
