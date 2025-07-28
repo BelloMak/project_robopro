@@ -4,17 +4,15 @@ from typing import Optional, Tuple
 
 from roboter.common.error.custom_error import Error
 from roboter.common.error.data_type_error import DataTypeError
-from roboter.robot.message_data_structures.interface.i_message_structure import (
-    IAnglesData,
+from roboter.robot.message_data_structures.interface.i_message_structure_unpacker import (
+    IJointsDataUnpacker,
+    JointsData,
 )
 
 
-class SixJointsRobotAnglesData(IAnglesData):
+class SixJointsRobotDataUnpacker(IJointsDataUnpacker):
     NUMBER_OF_JOINTS = 6
     UNPACK_FORMAT = "Q" + "d" * NUMBER_OF_JOINTS
-
-    identifier: int
-    angles: Tuple[float, float, float, float, float, float]
 
     def __init__(self):
         self.identifier = 0
@@ -23,24 +21,25 @@ class SixJointsRobotAnglesData(IAnglesData):
     @classmethod
     def unpack(
         cls, data: bytes
-    ) -> Tuple[Optional[IAnglesData], Optional[Error]]:
+    ) -> Tuple[Optional[JointsData], Optional[Error]]:
         """
         Unpack six joints robot angles data.
         """
 
         try:
             unpacked_data = struct.unpack(cls.UNPACK_FORMAT, data)
-            new_obj = SixJointsRobotAnglesData()
-            new_obj.identifier = unpacked_data[0]
-            new_obj.angles = (
-                math.radians(unpacked_data[1]),
-                math.radians(unpacked_data[2]),
-                math.radians(unpacked_data[3]),
-                math.radians(unpacked_data[4]),
-                math.radians(unpacked_data[5]),
-                math.radians(unpacked_data[6]),
+            joints_data = JointsData(
+                unpacked_data[0],
+                (
+                    math.radians(unpacked_data[1]),
+                    math.radians(unpacked_data[2]),
+                    math.radians(unpacked_data[3]),
+                    math.radians(unpacked_data[4]),
+                    math.radians(unpacked_data[5]),
+                    math.radians(unpacked_data[6]),
+                ),
             )
-            return new_obj, None
+            return joints_data, None
         except struct.error:
             return None, DataTypeError("failed to unpack data, wrong format")
 

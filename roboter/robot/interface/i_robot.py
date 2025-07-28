@@ -39,7 +39,7 @@ class IRobot(object, metaclass=ABCMeta):
 
     @abstractmethod
     def get_ee_position(
-        self, joints_pos: Tuple
+        self, joints_pos: Tuple[float, ...]
     ) -> Tuple[Optional[Matrix], Optional[Error]]:
         """
         Calculate end effector position using joints positions.
