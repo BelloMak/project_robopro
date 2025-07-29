@@ -1,17 +1,18 @@
 from typing import Iterable, List, Optional, Tuple
 
-TableRow = Tuple[str, str, str, str, str, str, str]
+TableRow = Tuple[int, float, float, float, float, float, float]
+FormattedTableRow = Tuple[str, str, str, str, str, str, str]
 
 
 class AppViewModel(object):
     """
-    View Model class of MVVM-C design pattern.
+    View Model class of MVVM based design architecture.
     """
 
     GET_END_EFFECTOR_POS_ERROR = "Failed to get end effector position!"
 
     def __init__(self):
-        self.rows: List[TableRow] = []
+        self.rows: List[FormattedTableRow] = []
         self.error_label: Optional[str] = None
 
     def add_rows(self, rows: Iterable[TableRow]):
@@ -19,7 +20,13 @@ class AppViewModel(object):
         Add rows to table structure.
         """
         for row in rows:
-            self.rows.append(row)
+            formatted_row = []
+            for item in tuple(row):
+                if isinstance(item, float):
+                    formatted_row.append("{:.6f}".format(item))
+                else:
+                    formatted_row.append(str(item))
+            self.rows.append(tuple(formatted_row))
 
     def clear_rows(self):
         """

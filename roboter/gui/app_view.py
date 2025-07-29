@@ -8,12 +8,12 @@ from roboter.gui.gui_layout import Ui_MainWindow
 
 class AppView(Ui_MainWindow):
     """
-    View class of MVVM-C design pattern.
+    View class of MVVM based design architecture.
     """
 
-    def __init__(self, view_model: AppViewModel):
+    def __init__(self):
         super().__init__()
-        self._view_model = view_model
+        self._view_model = AppViewModel()
         self._main_window = QtWidgets.QMainWindow()
 
         self.setupUi(self._main_window)

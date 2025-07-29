@@ -13,7 +13,6 @@ from roboter.common.stream.udp_stream import UdpClientStream
 from roboter.gui.app_controller import AppController
 from roboter.gui.app_model import AppModel
 from roboter.gui.app_view import AppView
-from roboter.gui.app_view_model import AppViewModel
 from roboter.robot.interface.i_robot import IRobot
 from roboter.robot.joint.revolute_joint import RevoluteJoint
 from roboter.robot.message_data_structures.six_joints_robot_msg_struct_unpacker import (
@@ -26,6 +25,7 @@ SOCKET = "socket"
 IP = "ip"
 PORT = "port"
 IS_BLOCKING = "is_blocking"
+RECEIVE_TIMEOUT = "receive_timeout"
 
 ROBOT_JOINT_1 = "joint_1"
 ROBOT_JOINT_2 = "joint_2"
@@ -98,15 +98,17 @@ class RobotTerminalEntryPoint(object):
         self.app = None
         self.app_model = None
         self.app_controller = None
-        self.app_view_model = None
         self.app_view = None
 
     def start(self) -> Optional[Error]:
         # Define data stream
         self.socket = UdpClientStream(
-            self.robot_terminal_config[SOCKET][IP],
-            self.robot_terminal_config[SOCKET][PORT],
-            self.robot_terminal_config[SOCKET][IS_BLOCKING],
+            hostname=self.robot_terminal_config[SOCKET][IP],
+            port=self.robot_terminal_config[SOCKET][PORT],
+            is_blocking=self.robot_terminal_config[SOCKET][IS_BLOCKING],
+            receive_timeout=self.robot_terminal_config[SOCKET][
+                RECEIVE_TIMEOUT
+            ],
         )
         self.unpacker = SixJointsRobotDataUnpacker()
 
@@ -121,8 +123,7 @@ class RobotTerminalEntryPoint(object):
         # Define GUI
         self.app = QApplication(sys.argv)
         self.app_model = AppModel(self.robot_controller)
-        self.app_view_model = AppViewModel()
-        self.app_view = AppView(self.app_view_model)
+        self.app_view = AppView()
         self.app_controller = AppController(self.app_model, self.app_view)
 
         # Define GUI handlers

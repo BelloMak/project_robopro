@@ -4,7 +4,7 @@ from roboter.gui.app_view import AppView
 
 class AppController(object):
     """
-    Controller class of MVVM-C design pattern.
+    Controller class of MVVM based design architecture.
     """
 
     def __init__(self, app_model: AppModel, app_view: AppView):
@@ -24,16 +24,7 @@ class AppController(object):
             view_model.show_get_end_effector_pos_error()
         else:
             view_model.clear_error_label()
-            data = []
-            for item in result:
-                row = []
-                for value in tuple(item):
-                    if isinstance(value, float):
-                        row.append("{:.6f}".format(value))
-                    else:
-                        row.append(str(value))
-                data.append(tuple(row))
-            view_model.add_rows(data)
+            view_model.add_rows(result)
 
         self._app_view.render(view_model)
 

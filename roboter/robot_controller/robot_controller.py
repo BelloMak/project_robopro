@@ -48,7 +48,6 @@ def handle_connection(function):
 
 class RobotController(object):
     __CMD_GET_POSITION = "get"
-    __RECEIVE_MSG_TIMEOUT = 1  # s
 
     def __init__(
         self, robot: IRobot, stream: IStream, unpacker: IJointsDataUnpacker
@@ -78,7 +77,6 @@ class RobotController(object):
         for _ in range(NUM_OF_MESSAGES):
             (raw_data, has_received), err = self._stream.receive_data(
                 buffer_size=self._unpacker.get_message_size(),
-                timeout=self.__RECEIVE_MSG_TIMEOUT,
             )
             if err is not None:
                 return None, err

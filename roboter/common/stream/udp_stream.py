@@ -19,6 +19,7 @@ class UdpClientStream(IStream):
         port: int,
         is_blocking: bool = False,
         buffer_size: int = 1024,
+        receive_timeout: Optional[int] = None,
     ):
         self._hostname = hostname
         self._port = port
@@ -26,6 +27,7 @@ class UdpClientStream(IStream):
         self._buffer_size = buffer_size
         self._socket = None
         self._is_open = False
+        self._receive_timeout = receive_timeout
 
     def open(self) -> Optional[Error]:
         """
@@ -82,7 +84,7 @@ class UdpClientStream(IStream):
             )
 
     def receive_data(
-        self, buffer_size: int = 0, timeout: int = 1
+        self, buffer_size: int = 0
     ) -> Tuple[ReceiveResult, Optional[Error]]:
         """
         Read data from socket.
@@ -95,12 +97,13 @@ class UdpClientStream(IStream):
         if buffer_size == 0:
             buffer_size = self._buffer_size
 
+        if self._receive_timeout is None:
+            timeout = 0.05
+        else:
+            timeout = self._receive_timeout
+
         start = time.time()
         while True:
-            if time.time() - start > timeout:
-                return (None, False), ConnectionError(
-                    "timeout occurred when receiving data"
-                )
             try:
                 raw_data = self._socket.recv(buffer_size)
                 has_received = len(raw_data) > 0
@@ -118,6 +121,10 @@ class UdpClientStream(IStream):
                     f"error occurred when receiving data via udp on {self._hostname}:{self._port}: {e}"
                 )
             time.sleep(0.01)
+            if time.time() - start > timeout:
+                return (None, False), ConnectionError(
+                    "timeout occurred when receiving data"
+                )
         return (raw_data, has_received), error
 
     def __del__(self):

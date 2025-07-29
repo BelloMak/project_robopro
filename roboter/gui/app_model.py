@@ -9,7 +9,7 @@ from roboter.robot_controller.robot_controller import (
 
 class AppModel(object):
     """
-    Model class of MVVM-C design pattern.
+    Model class of MVVM based design architecture.
     """
 
     def __init__(self, robot_controller: RobotController):
