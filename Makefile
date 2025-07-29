@@ -7,10 +7,13 @@ lint:
 format:
 	ruff format
 
-update_req:
+requirements:
 	uv export --no-hashes --format requirements-txt > requirements.txt
 
 server:
-	gcc ./server.c -o server.prog
+	gcc ./assignment/server.c -o server.prog
+
+run:
+	uv run ./start_robot_terminal.py
 
 .PHONY: test 

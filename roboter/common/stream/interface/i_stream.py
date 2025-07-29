@@ -44,7 +44,7 @@ class IWriteStream(object, metaclass=ABCMeta):
 
     @abstractmethod
     def receive_data(
-        self, buffer_size: int = 0, timeout: int = 1
+        self, buffer_size: int = 0
     ) -> Tuple[ReceiveResult, Optional[Error]]:
         """
         Method to receive data from stream.

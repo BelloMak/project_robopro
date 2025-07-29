@@ -2,6 +2,7 @@ from typing import NamedTuple, Optional, Tuple
 
 from roboter.common.error.connection_error import ConnectionError
 from roboter.common.error.custom_error import Error
+from roboter.common.logger.logger import debug, warning
 from roboter.common.stream.interface.i_stream import IStream
 from roboter.robot.interface.i_robot import IRobot
 from roboter.robot.message_data_structures.interface.i_message_structure_unpacker import (
@@ -34,17 +35,18 @@ def handle_connection(function):
             return None, err
 
         data, err = function(self, *args, **kwargs)
+        _ = self._stream.close()
 
         if err is not None:
+            warning("Failed to get response from robot")
             return None, err
 
-        _ = self._stream.close()
         return data, None
 
     return wrapper
 
 
-class RobotController:
+class RobotController(object):
     __CMD_GET_POSITION = "get"
 
     def __init__(
@@ -66,6 +68,8 @@ class RobotController:
         NUM_OF_MESSAGES = 5
         command = self.__CMD_GET_POSITION.encode("utf-8")
         result = []
+
+        debug("Requested robot end effector position")
         err = self._stream.send_data(command)
         if err is not None:
             return None, err
@@ -73,7 +77,6 @@ class RobotController:
         for _ in range(NUM_OF_MESSAGES):
             (raw_data, has_received), err = self._stream.receive_data(
                 buffer_size=self._unpacker.get_message_size(),
-                timeout=1,
             )
             if err is not None:
                 return None, err
@@ -99,4 +102,5 @@ class RobotController:
                 return None, err
 
             result.append(PositionData(data.identifier, *positions, *angles))
+        debug("Received robot end effector position")
         return tuple(result), None
