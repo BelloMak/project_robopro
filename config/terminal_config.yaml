@@ -1,0 +1,5 @@
+socket:
+  ip: "127.0.0.1"
+  port: 8088
+  is_blocking: False
+  receive_timeout: 1 # sec (> 0)
